@@ -39,7 +39,7 @@ Get:
 Alternatively, to add hyperlinks to the operators reference in the original PLRM.pdf only **markingMIN.bat** may be ran instead.
 
 Everything may be adapted to POSIX without problem.
-Theoretically any PDF producing PS interpreter may be used instead of GS.
+Theoretically any PDF producing PS interpreter may be used instead of GhostScript.
 
 ## Interactive Help with PDF
 ### Example of [Notepad++](https://notepad-plus-plus.org/) with [SumatraPDF](https://www.sumatrapdfreader.org/)
@@ -51,6 +51,7 @@ Ctrl="no" Alt="no" Shift="no" Key="112"
 >&quot;C:\Program Files\SumatraPDF\SumatraPDF.exe&quot; 
 -reuse-instance 
 -view &quot;continuous single page&quot; 
+-zoom &quot;fit width&quot; 
 -named-dest $(CURRENT_WORD) 
 D:\HPORM.pdf
 </Command>
