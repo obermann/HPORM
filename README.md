@@ -1,7 +1,7 @@
 # HPORM
 Hypertext PostScript 3 Operators Reference Manual
 
-As everbody knows [PostScript language](https://en.wikipedia.org/wiki/PostScript) is defined in
+As everybody knows [PostScript language](https://en.wikipedia.org/wiki/PostScript) is defined in
 [PLRM.pdf](https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles/PLRM.pdf)
 (PostScript Language Reference Manual). It is a big and exhaustive document, a book actually. 
 I felt the lack of a usable online/interactive help for PS. So, here you are - 
@@ -20,15 +20,16 @@ Adobe let freely download versions of PLRM.pdf for many years, but it has clear 
 > 
 
 So without express permission from Adobe the source PLRM.pdf nor possibly augmented with pdfmarks HPORM.pdf cannot be shared.
+
 I am not responsible for how anyone would use these pdfmarks.
-They are under the MIT licence. The content of the **maker** directory is under the GPL licence.
+They are under the MIT license. The content of the **maker** directory is under the GPL license.
 
 ## Applying pdfmarks
 Get:
 * [PLRM.pdf](https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles/PLRM.pdf) -
   must be in the working dir. At least read a second page of it - the book must be 
   "PostScript language reference manual / Adobe Systems Incorporated. - 3rd ed." of a year 1999.
-* [GhostScript](https://www.ghostscript.com/) interpreter -
+* [GhostScript](https://www.ghostscript.com/) PS interpreter -
   install it and if installed gswin32c.exe is not in PATH - 
   you may just copy it from c:\Program Files\gs\gs9.15\bin\ to the working dir.
 
@@ -37,10 +38,13 @@ Get:
 
 Alternatively, to add hyperlinks to the operators reference in the original PLRM.pdf only **markingMIN.bat** may be ran instead.
 
+Everything may be adapted to POSIX without problem.
+Theoretically any PDF producing PS interpreter may be used instead of GS.
+
 ## Interactive Help with PDF
-# Example of [Notepad++](https://notepad-plus-plus.org/) with [SumatraPDF](https://www.sumatrapdfreader.org/)
+### Example of [Notepad++](https://notepad-plus-plus.org/) with [SumatraPDF](https://www.sumatrapdfreader.org/)
 SumatraPDF is the best fit for using PDF for interactive help, because it is free, small and fast.
-Edit shortcuts.xml of Notepad++ and add to <UserDefinedCommands>:
+Edit shortcuts.xml of Notepad++ and add to UserDefinedCommands:
 ```xml
 <Command name="PS Help" 
 Ctrl="no" Alt="no" Shift="no" Key="112"
@@ -53,9 +57,10 @@ D:\HPORM.pdf
 ```
 
 http://docs.notepad-plus-plus.org/index.php/Editing_Configuration_Files
+
 https://www.sumatrapdfreader.org/docs/Command-line-arguments.html
 
 ## Making pdfmarks
 **maker** directory contains files that generate pdfmarks to **output** subdirectory. 
 But pdfmarks in the root directory although so generated have not escaped a bit of human touch.
-Generation is based on the PS interpreter output filtering by the font properties through the family of overridden *show* PS operators.
+Generation is based on the PS interpreter output filtering by the font properties through the family of overridden *show* operators.
