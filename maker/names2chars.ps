@@ -1,0 +1,637 @@
+% This is a fragment of GPL Ghostscript lib/ps2ascii.ps
+
+% Copyright (C) 1991, 1995, 1996, 1998, 1999 Aladdin Enterprises.  All rights reserved.
+%
+% This software is provided AS-IS with no warranty, either express or
+% implied.
+%
+% This software is distributed under license and may not be copied,
+% modified or distributed except as expressly authorized under the terms
+% of the license contained in the file LICENSE in this distribution.
+%
+% For more information about licensing, please refer to
+% http://www.ghostscript.com/licensing/. For information on
+% commercial licensing, go to http://www.artifex.com/licensing/ or
+% contact Artifex Software, Inc., 101 Lucas Valley Road #110,
+% San Rafael, CA  94903, U.S.A., +1(415)492-9861.
+
+
+% Define the letters -- characters which, if they occur followed by a hyphen
+% at the end of a line, cause the hyphen and line break to be ignored.
+/.letter.chars 100 dict def
+mark
+  65 1 90 { dup 32 add } for
+    counttomark
+        { StandardEncoding exch get .letter.chars exch dup put }
+    repeat
+pop
+
+%%* Add the rest of the letters from the [O]T1Encoding and
+%%* ISOLatin1Encoding vectors
+
+mark
+    /AE
+    /Aacute
+    /Abreve
+    /Acircumflex
+    /Adieresis
+    /Agrave
+    /Aogonek
+    /Aring
+    /Atilde
+    /Cacute
+    /Ccaron
+    /Ccedilla
+    /Dcaron
+    /Eacute
+    /Ecaron
+    /Ecircumflex
+    /Edieresis
+    /Egrave
+    /Eng
+    /Eogonek
+    /Eth
+    /Gbreve
+    /Germandbls
+    /IJ
+    /Iacute
+    /Icircumflex
+    /Idieresis
+    /Idot
+    /Igrave
+    /Lacute
+    /Lcaron
+    /Lslash
+    /Nacute
+    /Ncaron
+    /Ntilde
+    /OE
+    /Oacute
+    /Ocircumflex
+    /Odieresis
+    /Ograve
+    /Ohungarumlaut
+    /Oslash
+    /Otilde
+    /Racute
+    /Rcaron
+    /Sacute
+    /Scaron
+    /Scedilla
+    /Tcaron
+    /Tcedilla
+    /Thorn
+    /Uacute
+    /Ucircumflex
+    /Udieresis
+    /Ugrave
+    /Uhungarumlaut
+    /Uring
+    /Yacute
+    /Ydieresis
+    /Zacute
+    /Zcaron
+    /Zdot
+    /aacute
+    /abreve
+    /acircumflex
+    /adieresis
+    /ae
+    /agrave
+    /aogonek
+    /aring
+    /atilde
+    /cacute
+    /ccaron
+    /ccedilla
+    /dbar
+    /dcaron
+    /dotlessi
+    /dotlessj
+    /eacute
+    /ecaron
+    /ecircumflex
+    /edieresis
+    /egrave
+    /eng
+    /eogonek
+    /eth
+    /exclamdown
+    /ff
+    /ffi
+    /ffl
+    /fi
+    /fl
+    /gbreve
+    /germandbls
+    /iacute
+    /icircumflex
+    /idieresis
+    /igrave
+    /ij
+    /lacute
+    /lcaron
+    /lslash
+    /nacute
+    /ncaron
+    /ntilde
+    /oacute
+    /ocircumflex
+    /odieresis
+    /oe
+    /ograve
+    /ohungarumlaut
+    /oslash
+    /otilde
+    /questiondown
+    /racute
+    /rcaron
+    /sacute
+    /scaron
+    /scedilla
+    /section
+    /sterling
+    /tcaron
+    /tcedilla
+    /thorn
+    /uacute
+    /ucircumflex
+    /udieresis
+    /ugrave
+    /uhungarumlaut
+    /uring
+    /yacute
+    /ydieresis
+    /zacute
+    /zcaron
+    /zdot
+counttomark
+    { .letter.chars exch dup put }
+repeat
+pop
+
+% Define a set of characters which, if they occur at the start of a line,
+% are taken as indicating a paragraph break.
+/.break.chars 50 dict def
+mark
+    /bullet /dagger /daggerdbl /periodcentered /section
+    counttomark
+        { .break.chars exch dup put }
+    repeat
+pop
+
+% Define character translation to ASCII.
+% We have to do this for the entire character set.
+
+/.char.map 500 dict def
+
+/.chars.def { counttomark 2 idiv { .char.map 3 1 roll put } repeat pop } def
+
+% Encode the printable ASCII characters.
+
+mark 32 1 126
+ { 1 string dup 0 4 -1 roll put
+   dup 0 get StandardEncoding exch get exch
+ }
+for .chars.def
+
+        % Encode accents.
+mark
+    /acute      (')
+    /caron      (^)
+    /cedilla    (,)
+    /circumflex (^)
+    /dieresis   (")
+    /grave      (`)
+    /ring       (*)
+    /tilde      (~)
+.chars.def
+
+        % Encode the ISO accented characters.
+mark 192 1 255
+ { ISOLatin1Encoding exch get =string cvs
+   dup 0 1 getinterval 1 index dup length 1 sub 1 exch getinterval
+   .char.map 2 index known .char.map 2 index known and
+    { .char.map 3 -1 roll get .char.map 3 -1 roll get concatstrings
+      .char.map 3 1 roll put
+    }
+    { pop pop pop
+    }
+   ifelse
+ }
+for .chars.def
+
+% Encode the remaining standard and ISO alphabetic characters.
+
+mark
+  /AE (AE) /Eth (DH) /OE (OE) /Thorn (Th)
+  /ae (ae) /eth (dh)
+  /ffi (ffi) /ffl (ffl) /fi (fi) /fl (fl)
+  /germandbls (ss) /oe (oe) /thorn (th)
+.chars.def
+
+% Encode the other standard and ISO characters.
+
+mark
+  /brokenbar (|) /bullet (*) /copyright ((C)) /currency (#)
+  /dagger (#) /daggerdbl (##) /degree (o) /divide (/) /dotaccent (.)
+  /dotlessi (i)
+  /ellipsis (...) /emdash (--) /endash (-) /exclamdown (!)
+  /florin (f) /fraction (/)
+  /guillemotleft (<<) /guillemotright (>>)
+  /guilsinglleft (<) /guilsinglright (>) /hungarumlaut ("") /logicalnot (~)
+  /macron (_) /minus (-) /mu (u) /multiply (*)
+  /ogonek (,) /onehalf (1/2) /onequarter (1/4) /onesuperior (1)
+  /ordfeminine (-a) /ordmasculine (-o)
+  /paragraph (||) /periodcentered (*) /perthousand (o/oo) /plusminus (+-)
+  /questiondown (?) /quotedblbase (") /quotedblleft (") /quotedblright (")
+  /quotesinglbase (,) /quotesingle (') /registered ((R))
+  /section ($) /sterling (#)
+  /threequarters (3/4) /threesuperior (3) /trademark ((TM)) /twosuperior (2)
+  /yen (Y)
+.chars.def
+
+% Encode a few common Symbol characters.
+
+mark
+  /asteriskmath (*) /copyrightsans ((C)) /copyrightserif ((C))
+  /greaterequal (>=) /lessequal (<=) /registersans ((R)) /registerserif ((R))
+  /trademarksans ((TM)) /trademarkserif ((TM))
+.chars.def
+
+%%* Add a few characters from StandardEncoding and ISOLatin1Encoding
+%%* that were missing.
+
+mark
+    /cent           (c)
+    /guilsinglleft  (<)
+    /guilsinglright (>)
+    /breve          (*)
+    /Lslash         (L/)
+    /lslash         (l/)
+.chars.def
+
+%%* Define the OT1Encoding and T1Encoding vectors for use with dvips
+%%* files.  Unfortunately, there's no way of telling what font is
+%%* really being used within a dvips document, so we can't provide an
+%%* appropriate encoding for each individual font.  Instead, we'll
+%%* just provide support for the two most popular text encodings, the
+%%* OT1 and T1 encodings, and just accept the fact that any font not
+%%* using one of those encodings will be rendered as gibberish.
+%%*
+%%* OT1 is Knuth's 7-bit encoding for the CMR text fonts, while T1
+%%* (aka the Cork encoding) is the 8-bit encoding used by the DC
+%%* fonts, a preliminary version of the proposed Extended Computer
+%%* Modern fonts.  Unfortunately, T1 is not a strict extension of OT1;
+%%* they differ in positions 8#000 through 8#040, 8#074, 8#076, 8#134,
+%%* 8#137, 8#173, 8#174, 8#175 and 8#177, so we can't use the same
+%%* vector for both.
+%%*
+%%* Of course, we also can't reliably tell the difference between an
+%%* OT1-encoded font and a T1-encoded font based on the information in
+%%* a dvips-created PostScript file.  As a best-guess solution, we'll
+%%* use the T1 encoding if the font contains any characters in
+%%* positions above 8#177 and the OT1 encoding if it doesn't.
+
+/T1Encoding  256 array def
+
+/OT1Encoding 256 array def
+
+%%* T1Encoding shares a lot with StandardEncoding, so let's start
+%%* there.
+
+StandardEncoding T1Encoding copy pop
+
+/OT1.encode {
+    counttomark
+    2 idiv
+      { OT1Encoding 3 1 roll put }
+    repeat
+    cleartomark
+} def
+
+/T1.encode {
+    counttomark
+    2 idiv
+      { T1Encoding 3 1 roll put }
+    repeat
+    cleartomark
+} def
+
+mark
+    8#000 /grave
+    8#001 /acute
+    8#002 /circumflex
+    8#003 /tilde
+    8#004 /dieresis
+    8#005 /hungarumlaut
+    8#006 /ring
+    8#007 /caron
+
+    8#010 /breve
+    8#011 /macron
+    8#012 /dotaccent
+    8#013 /cedilla
+    8#014 /ogonek
+    8#015 /quotesinglbase
+    8#016 /guilsinglleft
+    8#017 /guilsinglright
+
+    8#020 /quotedblleft
+    8#021 /quotedblright
+    8#022 /quotedblbase
+    8#023 /guillemotleft
+    8#024 /guillemotright
+    8#025 /endash
+    8#026 /emdash
+    8#027 /cwm
+
+    8#030 /perthousandzero
+    8#031 /dotlessi
+    8#032 /dotlessj
+    8#033 /ff
+    8#034 /fi
+    8#035 /fl
+    8#036 /ffi
+    8#037 /ffl
+
+%%  8#040 through 8#176 follow StandardEncoding
+
+    8#177 /hyphen
+T1.encode
+
+mark
+    8#200 /Abreve
+    8#201 /Aogonek
+    8#202 /Cacute
+    8#203 /Ccaron
+    8#204 /Dcaron
+    8#205 /Ecaron
+    8#206 /Eogonek
+    8#207 /Gbreve
+    8#210 /Lacute
+    8#211 /Lcaron
+    8#212 /Lslash
+    8#213 /Nacute
+    8#214 /Ncaron
+    8#215 /Eng
+    8#216 /Ohungarumlaut
+    8#217 /Racute
+    8#220 /Rcaron
+    8#221 /Sacute
+    8#222 /Scaron
+    8#223 /Scedilla
+    8#224 /Tcaron
+    8#225 /Tcedilla
+    8#226 /Uhungarumlaut
+    8#227 /Uring
+    8#230 /Ydieresis
+    8#231 /Zacute
+    8#232 /Zcaron
+    8#233 /Zdot
+    8#234 /IJ
+    8#235 /Idot
+    8#236 /dbar
+    8#237 /section
+    8#240 /abreve
+    8#241 /aogonek
+    8#242 /cacute
+    8#243 /ccaron
+    8#244 /dcaron
+    8#245 /ecaron
+    8#246 /eogonek
+    8#247 /gbreve
+    8#250 /lacute
+    8#251 /lcaron
+    8#252 /lslash
+    8#253 /nacute
+    8#254 /ncaron
+    8#255 /eng
+    8#256 /ohungarumlaut
+    8#257 /racute
+    8#260 /rcaron
+    8#261 /sacute
+    8#262 /scaron
+    8#263 /scedilla
+    8#264 /tcaron
+    8#265 /tcedilla
+    8#266 /uhungarumlaut
+    8#267 /uring
+    8#270 /ydieresis
+    8#271 /zacute
+    8#272 /zcaron
+    8#273 /zdot
+    8#274 /ij
+    8#275 /exclamdown
+    8#276 /questiondown
+    8#277 /sterling
+
+    8#300 /Agrave
+    8#301 /Aacute
+    8#302 /Acircumflex
+    8#303 /Atilde
+    8#304 /Adieresis
+    8#305 /Aring
+    8#306 /AE
+    8#307 /Ccedilla
+    8#310 /Egrave
+    8#311 /Eacute
+    8#312 /Ecircumflex
+    8#313 /Edieresis
+    8#314 /Igrave
+    8#315 /Iacute
+    8#316 /Icircumflex
+    8#317 /Idieresis
+    8#320 /Eth
+    8#321 /Ntilde
+    8#322 /Ograve
+    8#323 /Oacute
+    8#324 /Ocircumflex
+    8#325 /Otilde
+    8#326 /Odieresis
+    8#327 /OE
+    8#330 /Oslash
+    8#331 /Ugrave
+    8#332 /Uacute
+    8#333 /Ucircumflex
+    8#334 /Udieresis
+    8#335 /Yacute
+    8#336 /Thorn
+    8#337 /Germandbls
+
+    8#340 /agrave
+    8#341 /aacute
+    8#342 /acircumflex
+    8#343 /atilde
+    8#344 /adieresis
+    8#345 /aring
+    8#346 /ae
+    8#347 /ccedilla
+    8#350 /egrave
+    8#351 /eacute
+    8#352 /ecircumflex
+    8#353 /edieresis
+    8#354 /igrave
+    8#355 /iacute
+    8#356 /icircumflex
+    8#357 /idieresis
+    8#360 /eth
+    8#361 /ntilde
+    8#362 /ograve
+    8#363 /oacute
+    8#364 /ocircumflex
+    8#365 /otilde
+    8#366 /odieresis
+    8#367 /oe
+    8#370 /oslash
+    8#371 /ugrave
+    8#372 /uacute
+    8#373 /ucircumflex
+    8#374 /udieresis
+    8#375 /yacute
+    8#376 /thorn
+    8#377 /germandbls
+
+T1.encode
+
+%%* Now copy OT1Encoding into T1Encoding and make a few changes.
+
+T1Encoding OT1Encoding copy pop
+
+mark
+    8#000 /Gamma
+    8#001 /Delta
+    8#002 /Theta
+    8#003 /Lambda
+    8#004 /Xi
+    8#005 /Pi
+    8#006 /Sigma
+    8#007 /Upsilon
+
+    8#010 /Phi
+    8#011 /Psi
+    8#012 /Omega
+    8#013 /ff
+    8#014 /fi
+    8#015 /fl
+    8#016 /ffi
+    8#017 /ffl
+
+    8#020 /dotlessi
+    8#021 /dotlessj
+    8#022 /grave
+    8#023 /acute
+    8#024 /caron
+    8#025 /breve
+    8#026 /macron
+    8#027 /ring
+
+    8#030 /cedilla
+    8#031 /germandbls
+    8#032 /ae
+    8#033 /oe
+    8#034 /oslash
+    8#035 /AE
+    8#036 /OE
+    8#037 /Oslash
+
+    8#040 /polishslash
+
+    8#042 /quotedblright
+
+    8#074 /exclamdown
+    8#076 /questiondown
+
+    8#134 /quotedblleft
+    8#137 /dotaccent
+
+    8#173 /endash
+    8#174 /emdash
+    8#175 /hungarumlaut
+    8#177 /dieresis
+OT1.encode
+
+%%* And add a few characters from the OT1Encoding
+
+mark
+    /Gamma              (\\Gamma )
+    /Delta              (\\Delta )
+    /Theta              (\\Theta )
+    /Lambda             (\\Lambda )
+    /Xi                 (\\Xi )
+    /Pi                 (\\Pi )
+    /Sigma              (\\Sigma )
+    /Upsilon            (\\Upsilon )
+
+    /Phi                (\\Phi )
+    /Psi                (\\Psi )
+    /Omega              (\\Omega )
+
+    /dotlessj           (j)
+    /ff                 (ff)
+
+    /cwm                ()
+
+    /perthousandzero    (0)
+
+    /polishslash        ()
+
+    /Abreve             (A*)
+    /Aogonek            (A,)
+    /Cacute             (C')
+    /Ccaron             (C^)
+    /Dcaron             (D^)
+    /Ecaron             (E^)
+    /Eogonek            (E,)
+    /Gbreve             (G*)
+    /Lacute             (L')
+    /Lcaron             (L^)
+    /Nacute             (N')
+    /Ncaron             (N^)
+    /Eng                (NG)
+    /Ohungarumlaut      (O"")
+    /Racute             (R')
+    /Rcaron             (R^)
+    /Sacute             (S')
+    /Scaron             (S^)
+    /Scedilla           (S,)
+    /Tcaron             (T^)
+    /Tcedilla           (T,)
+    /Uhungarumlaut      (U"")
+    /Uring              (U*)
+    /Ydieresis          (Y")
+    /Zacute             (Z')
+    /Zcaron             (Z^)
+    /Zdot               (Z.)
+    /IJ                 (IJ)
+    /Idot               (I.)
+    /dbar               (d-)
+    /abreve             (a*)
+    /aogonek            (a,)
+    /cacute             (c')
+    /ccaron             (c^)
+    /dcaron             (d^)
+    /ecaron             (e^)
+    /eogonek            (e,)
+    /gbreve             (g*)
+    /lacute             (l')
+    /lcaron             (l^)
+    /nacute             (n')
+    /ncaron             (n^)
+    /eng                (ng)
+    /ohungarumlaut      (o"")
+    /racute             (r')
+    /rcaron             (r^)
+    /sacute             (s')
+    /scaron             (s^)
+    /scedilla           (s,)
+    /tcaron             (t^)
+    /tcedilla           (t,)
+    /uhungarumlaut      (u"")
+    /uring              (u*)
+    /zacute             (z')
+    /zcaron             (z^)
+    /zdot               (z.)
+    /ij                 (ij)
+    /Germandbls         (SS)
+.chars.def

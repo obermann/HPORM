@@ -1,0 +1,100 @@
+%!PS-Adobe-3.0
+
+/Scratch 100 string def
+
+/MarksProlog (/correction where { pop } { /correction { } def } ifelse\r\n) def
+
+/concatstrings { % (a) (b) -> (ab)  
+	exch dup length    
+	2 index length add string    
+	dup dup 4 2 roll copy length
+	4 -1 roll putinterval
+} bind def 
+
+/TypeMark <<
+	/OUT {
+		counttomark 1 add copy pop .dicttomark /Page get
+		dup 519 ge
+		exch 737 le
+		and {
+			FOUT ([) writestring
+			counttomark -1 1 {
+				dup 2 mod 0 gt { FOUT (\r\n) writestring } { FOUT ( ) writestring } ifelse
+				dup FOUT exch 1 add index write===only % From gs_init.ps
+				index /Page eq { FOUT ( correction) writestring } if
+			} for
+			FOUT ( pdfmark\r\n) writestring
+		} if
+	}
+	/LNK {
+		counttomark 1 add copy pop .dicttomark
+		dup dup /Page known exch /View known and {
+			dup /Page get
+			dup 
+			dup 519 ge
+			exch 737 le
+			and {
+				/FLNK FLNK1 def
+				FLNK ([\r\n/Page ) writestring
+				FLNK exch write===only
+				FLNK ( correction\r\n/Border [0 0 0]) writestring
+			} {
+				/FLNK FLNK2 def
+				FLNK ([\r\n/Page ) writestring
+				FLNK exch write===only
+				%FLNK (\r\n/BS <</Type /Border /W 0.5 /S /U>>\r\n/Border [0 0 0]\r\n/Action /GoToR\r\n/File (PLRM.pdf)\r\n/New-Window true) writestring
+				% Links rect goes empty too far
+				FLNK (\r\n/Border [0 0 0]\r\n/Action /GoToR\r\n/File (PLRM.pdf)\r\n/New-Window true) writestring
+			} ifelse
+			FLNK (\r\n/SrcPg ) writestring
+			FLNK Page# Scratch cvs writestring
+			FLNK ( correction\r\n/Rect ) writestring
+			dup /Rect get FLNK exch write===only
+			FLNK (\r\n/View ) writestring
+			/View get FLNK exch write===only
+			FLNK (\r\n/Subtype /Link \r\n/ANN pdfmark\r\n) writestring
+		} {
+			pop
+			FLOG ([\r\n/SrcPg ) writestring
+			FLOG Page# Scratch cvs writestring
+			counttomark -1 1 {
+				dup 2 mod 0 gt { FLOG (\r\n) writestring } { FLOG ( ) writestring } ifelse
+				FLOG exch index write===only % From gs_init.ps	
+			} for
+			FLOG ( pdfmark\r\n) writestring
+		} ifelse
+	}
+>> def
+
+/SaveMark { 
+	dup dup TypeMark exch known { TypeMark exch get exec } {
+		FLOG ([) writestring
+		counttomark -1 1 {
+			FLOG ( ) writestring
+			FLOG exch index write===only % From gs_init.ps	
+		} for
+		FLOG ( pdfmark % ) writestring
+		FLOG Page# Scratch cvs writestring
+		FLOG (\r\n) writestring
+	} ifelse
+} bind def
+
+%pdfdict /.writepdfmarks { //true } .forceput
+/*pdfmark /pdfmark load def
+/pdfmark {
+	SaveMark
+	//*pdfmark
+} bind odef
+
+/FOUT (output/) File (marksOUT.ps) concatstrings concatstrings (w) file def
+FOUT MarksProlog writestring
+/FLNK1 (output/) File (marksLNK1.ps) concatstrings concatstrings (w) file def
+FLNK1 MarksProlog writestring
+/FLNK2 (output/) File (marksLNK2.ps) concatstrings concatstrings (w) file def
+FLNK2 MarksProlog writestring
+/FLOG (output/) File (marksLOG.ps) concatstrings concatstrings (w) file def
+File (r) file runpdf
+FOUT closefile
+FLNK1 closefile
+FLNK2 closefile
+FLOG closefile

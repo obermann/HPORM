@@ -1,0 +1,173 @@
+%!PS-Adobe-3.0
+
+% Show errors, because GS PDF may not!
+/..stopped /stopped load def
+/stopped {
+	$error /newerror get {
+		handleerror
+	} if
+	..stopped
+} bind odef
+
+/..show /show load def
+/show {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		//..show
+	} forall
+} bind odef
+
+/..ashow /ashow load def
+/ashow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		3 copy
+		//..ashow
+		pop % Char
+	} forall
+	2 pops % Params
+} bind odef
+
+/..awidthshow /awidthshow load def
+/awidthshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		6 copy
+		//..awidthshow
+		pop % Char
+	} forall
+	5 pops % Params
+} bind odef
+
+/..widthshow /widthshow load def
+/widthshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		4 copy
+		//..widthshow
+		pop % Char
+	} forall
+	3 pops % Params
+} bind odef
+
+% Two Ghostscript sourcecode invention
+/...pdfawidthshow /.pdfawidthshow load def
+/.pdfawidthshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		6 copy
+		//...pdfawidthshow
+		pop % Char
+	} forall
+	5 pops % Params
+} bind odef
+
+/...pdfwidthshow /.pdfwidthshow load def
+/.pdfwidthshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		4 copy
+		//...pdfwidthshow
+		pop % Char
+	} forall
+	3 pops % Params
+} bind odef
+
+% Unused in GS_PDF_ProcSet
+% (good, because this redefinition is not ideal)
+/..kshow /kshow load def
+/kshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		2 copy
+		//..kshow
+		pop % Char
+	} forall
+	1 pops % Params
+} bind odef
+
+/..cshow /cshow load def
+/cshow {
+	dup TestMarker
+	{
+		dup Marker
+		Char dup 0 4 -1 roll put
+		2 copy
+		//..cshow
+		pop % Char
+	} forall
+	1 pops % Params
+} bind odef
+
+/..xshow /xshow load def
+/xshow {
+	exch
+	dup TestMarker
+	0 1 2 index length 1 sub {
+		dup 3 index exch 1 getinterval % array
+		exch 2 index exch get % char int
+		dup Marker
+		Char dup 0 4 -1 roll put
+		exch
+		//..xshow
+	} for
+	2 pops
+} bind odef
+
+/..yshow /yshow load def
+/yshow {
+	exch
+	dup TestMarker
+	0 1 2 index length 1 sub {
+		dup 3 index exch 1 getinterval % array
+		exch 2 index exch get % char int
+		dup Marker
+		Char dup 0 4 -1 roll put
+		exch
+		//..yshow
+	} for
+	2 pops
+} bind odef
+
+% Unused in GS_PDF_ProcSet
+/..xyshow /xyshow load def
+/xyshow {
+	exch
+	dup TestMarker
+	0 1 2 index length 1 sub {
+		dup 3 index exch 2 mul 2 getinterval % array
+		exch 2 index exch get % char int
+		dup Marker
+		Char dup 0 4 -1 roll put
+		exch
+		//..xyshow
+	} for
+	2 pops
+} bind odef
+
+% Unused in GS_PDF_ProcSet
+% /..glyphshow /glyphshow load def
+% /glyphshow {
+	% (glyphshow) TestMarker
+	% //..glyphshow
+% } bind odef
+
+% /..showpage /showpage load def
+% /showpage {
+	% //..showpage
+	% Format
+% } bind odef

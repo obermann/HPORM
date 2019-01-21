@@ -1,0 +1,37 @@
+%!PS-Adobe-3.0
+
+/Scratch 100 string def
+
+/Destinations 65000 dict def
+/pdfmark {
+	pop
+	.dicttomark dup /Dest get exch /Page get
+	Destinations 3 1 roll put
+} bind def
+(output/pdfmarksDEST.ps) run 
+
+/Links 65000 dict def
+/Page 0 def
+/pdfmark {
+	pop
+	.dicttomark dup /Dest get exch /SrcPg get /Page exch def	
+	dup Destinations exch known {
+		pop
+	} {
+		Links exch Page put
+	} ifelse
+} bind def
+(output/pdfmarksANN.ps) run 
+
+/BlackList (output/markerblacknew.ps) (w) file def
+BlackList (/BlackList [) writestring
+Links {
+	exch
+	Scratch cvs
+	BlackList (\r\n\() writestring
+	BlackList exch writestring
+	BlackList (\) % ) writestring
+	BlackList exch Scratch cvs writestring
+} forall
+BlackList (\r\n] def\r\n) writestring
+BlackList closefile

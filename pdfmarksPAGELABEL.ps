@@ -1,0 +1,20 @@
+% http://bugs.ghostscript.com/show_bug.cgi?id=691889
+% pdfmark Reference - Adding content to named objects - pp. 16
+% 12.4.2 Page Labels (ISO PDF REF)
+[
+/_objdef { pl } 
+/type /dict 
+/OBJ pdfmark
+[
+{ pl } <<
+	/Nums [
+		0 <<
+			%/P (Page ) 
+			/S /D
+			/St 505
+		>> 
+		%2 <<>>
+	]
+>> /PUT pdfmark
+[
+{Catalog} << /PageLabels { pl } >> /PUT pdfmark

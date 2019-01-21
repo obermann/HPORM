@@ -1,0 +1,322 @@
+%!PS-Adobe-3.0
+
+% To redefine systemdict proc we need -dDELAYBIND + odef !!!
+
+(names2chars.ps) run
+% What else operator name could contain except letters:
+mark
+	/bracketleft
+	/bracketright
+	%/underscore
+	/less
+	/equal
+	/greater
+	/dollar
+	/percent
+	%/hyphen
+counttomark { .letter.chars exch dup put } repeat pop
+% Add numbers:
+48 1 57 { StandardEncoding exch get .letter.chars exch dup put } for
+
+/MarksDEST (output/pdfmarksDEST.ps) (w) file def
+/MarksOUT (output/pdfmarksOUT.ps) (w) file def
+/MarksANN (output/pdfmarksANN.ps) (w) file def
+/MarksLog (output/markerlog.tab) (w) file def
+
+/MarksProlog (/correction where { pop } { /correction { } def } ifelse\r\n) def
+[
+	MarksDEST
+	MarksANN
+] { MarksProlog writestring } forall
+
+/Char 1 string def
+
+/Scratch 100 string def
+
+/Buf 1000 string def
+
+/pops { { pop } repeat } bind def
+
+/TestMarker { % <string> TestMarker -
+	MarksLog Page# Scratch cvs writestring
+	MarksLog (\t ) writestring
+	currentpoint transform matrix defaultmatrix itransform %exch
+		MarksLog exch Scratch cvs writestring
+		MarksLog (\t) writestring
+		MarksLog exch Scratch cvs writestring
+	MarksLog (\t ) writestring
+	currentfont
+	dup /FontMatrix get
+		matrix currentmatrix
+		matrix defaultmatrix
+		matrix invertmatrix
+		matrix concatmatrix
+		matrix concatmatrix
+			3 get 1000000 mul cvi Scratch cvs MarksLog exch writestring
+	MarksLog (\t) writestring
+	/FontName get Scratch cvs MarksLog exch writestring
+	MarksLog (\t_) writestring
+	MarksLog exch writestring
+	MarksLog (_\r\n) writestring
+} bind def
+/TestMarker { pop } bind def
+
+% Because save/restore in PDF proc
+currentglobal
+true setglobal
+/Collection 20 dict def
+Collection begin %
+	/Word 100 string def
+	/Inside 100 string def
+	/InsideCopy Inside def
+	/LetterPos 0 def
+	/LetterSize 0 def
+	/LetterX 0.0 def
+	/WordX 0.0 def
+	/WordY 0.0 def
+	/PageNo 0 def
+	% First half of hyphenated word
+	/LetterXh 0.0 def
+	/WordXh 0.0 def
+	/WordYh 0.0 def
+	/PageNoh 0 def
+end
+setglobal
+
+/Format {
+	% Writer
+	Collection begin
+		PageNo 0 gt {
+			MarksLog PageNo Scratch cvs writestring
+			MarksLog (\t ) writestring
+			Word 0 LetterPos getinterval MarksLog exch writestring
+			MarksLog (\t ) writestring
+			MarksLog LetterSize Scratch cvs writestring
+			MarksLog (\t ) writestring
+			MarksLog WordX Scratch cvs writestring
+			MarksLog (\t ) writestring
+			MarksLog WordY Scratch cvs writestring
+			MarksLog (\r\n) writestring
+			/LetterPos 0 def % Reset
+			/PageNo 0 def
+		} if
+	end
+} bind def
+
+% [
+% /Dest (MyNamedDest)
+% /Rect [70 550 210 575]
+% /SrcPg 1
+% %/AP
+% %/AS
+% /Border [ 0 0 0 ]
+% /Color [ ]
+% %/F
+% /Subtype /Link
+% /ANN pdfmark
+% [
+% /Dest (MyNamedDest)
+% /Page 1
+% /View [ /XYZ NULL 797 NULL ]
+% /DEST pdfmark
+% [
+% /Dest (MyNamedDest)
+% /Title (MyNamedDest)
+% %/Count int
+% %/Color array
+% /F 2
+% /OUT pdfmark
+
+
+% /BlackList [
+	% (Errors)
+	% (See)
+	% (Also)
+	% (Example)
+	% (Examples)
+% ] def
+% /BlackList [] def
+(markerblack.ps) run
+
+/Format {
+	% Writer
+	Collection begin
+		{
+			PageNo 0 eq { stop } {
+				Word 0 LetterPos getinterval
+				% Reset
+				/LetterPos 0 def
+			} ifelse
+			BlackList {
+				1 index eq { pop stop } if
+			} forall
+			% PageNo 537 eq WordX 340 lt WordY 570 lt and and { % Error descriptions page exception
+				% MarksDEST ([\r\n/Dest /) writestring
+				% MarksDEST exch writestring
+				% MarksDEST (\r\n/Page 537 correction\r\n/View [ /XYZ null ) writestring
+				% MarksDEST WordY 12 add Scratch cvs writestring
+				% MarksDEST ( null ]\r\n/DEST pdfmark\r\n) writestring
+				% stop
+			% } if
+			dup InsideCopy eq { pop stop } if % Topic content shall not refer to itself
+		} stopped not {
+			LetterSize 9750 eq { % Destination
+				dup Inside copy /InsideCopy exch def
+				% Named destination
+				MarksDEST ([\r\n/Dest \() writestring
+				dup MarksDEST exch writestring
+				MarksDEST (\)\r\n/Page ) writestring
+				MarksDEST PageNo Scratch cvs writestring
+				MarksDEST ( correction\r\n/View [ /XYZ 530 ) writestring
+				MarksDEST WordY 16 add Scratch cvs writestring
+				MarksDEST ( null ]\r\n/DEST pdfmark\r\n) writestring
+				% Outline
+				MarksOUT ([\r\n/Dest \() writestring
+				dup MarksOUT exch writestring
+				MarksOUT (\)\r\n/Title \() writestring
+				MarksOUT exch writestring
+				MarksOUT (\)\r\n/F 2\r\n/OUT pdfmark\r\n) writestring
+			} { % Link
+				MarksANN ([\r\n/Dest \() writestring
+				dup MarksANN exch writestring
+				MarksANN (\)\r\n/SrcPg ) writestring
+				MarksANN PageNo Scratch cvs writestring
+				MarksANN ( correction\r\n/Rect [ ) writestring
+				MarksANN WordX 1 sub Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN WordY 1 sub Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN LetterX 5 add Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN WordY 7 add Scratch cvs writestring
+				MarksANN ( ]\r\n/Border [0 0 0]\r\n/Subtype /Link\r\n/ANN pdfmark\r\n) writestring
+				PageNoh 0 gt { % Same for the first part of hyphenated word if any
+				MarksANN ([ % Hyphenated\r\n/Dest \() writestring
+				MarksANN exch writestring
+				MarksANN (\)\r\n/SrcPg ) writestring
+				MarksANN PageNoh Scratch cvs writestring
+				MarksANN ( correction\r\n/Rect [ ) writestring
+				MarksANN WordXh 1 sub Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN WordYh 1 sub Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN LetterXh 5 add Scratch cvs writestring
+				MarksANN ( ) writestring
+				MarksANN WordYh 7 add Scratch cvs writestring
+				MarksANN ( ]\r\n/Border [0 0 0]\r\n/Subtype /Link\r\n/ANN pdfmark\r\n) writestring
+				/PageNoh 0 def
+				} { pop } ifelse
+			} ifelse
+		} if
+		/PageNo 0 def
+	end
+} bind def
+
+/Marker { % <int> Marker -
+	% Filter
+	currentfont dup
+		% Font
+		%dup /FontMatrix get matrix currentmatrix matrix concatmatrix 3 get /FontSize exch def
+		dup /FontMatrix get
+			matrix currentmatrix
+			matrix defaultmatrix
+			matrix invertmatrix
+			matrix concatmatrix
+			matrix concatmatrix
+				3 get 1000000 mul cvi /FontSize exch def
+		/FontName get /FontName exch def
+		% Convert to char name
+		/Encoding get exch get
+	{
+		FontSize 9750 ne
+		FontSize 8748 ne
+		and { stop } if
+		FontName /LGMGDF+MyriadMM_565_600_ ne { stop } if
+		% http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+		% Word separation char
+		% dup 60 lt { stop } if
+		% dup 125 gt { stop } if
+		% dup //.letter.chars exch known not { stop } if
+		dup dup
+			//.letter.chars exch known
+			exch /hyphen eq
+			Collection /PageNo get 0 gt
+				and
+				or not { stop } if
+	} stopped {
+		pop
+		Format
+	} { % Constructor
+		currentpoint transform matrix defaultmatrix itransform /Y exch def /X exch def
+		Collection begin
+			{ % New word?
+				PageNo 0 eq { stop } if
+				FontSize LetterSize ne { stop } if
+				Y WordY ne { % New line
+					Word LetterPos 1 sub get 16#2D eq { % Hyphenation
+						/LetterXh LetterX def
+						/WordXh WordX def
+						/WordYh WordY def
+						/PageNoh PageNo def
+						/LetterPos LetterPos 1 sub def
+						/PageNo 0 def
+					} if
+					stop
+				} if
+				% Far position
+				X LetterX sub 20 gt { stop } if
+			} stopped {
+				Format
+				/LetterSize FontSize def
+				/WordX X def
+				/WordY Y def
+				/PageNo Page# def
+			} if
+			//.char.map exch get % Translation
+			dup Word exch LetterPos exch putinterval
+			length LetterPos add /LetterPos exch def
+			/LetterX X def
+		end
+	} ifelse
+} bind def
+
+(markershow.ps) run
+
+File (r) file
+runpdf
+% runpdfbegin
+% % /..Tj /Tj load def
+% % /Tj {
+	% % dup TestMarker
+	% % ..Tj
+% % } bind def
+% process_trailer_attrs
+% runpdfpagerange
+% dopdfpages
+% runpdfend
+
+Format
+[
+	MarksDEST
+	MarksOUT
+	MarksANN
+	MarksLog
+] { closefile } forall
+
+% % Font size
+% % Assume units per em square of 1000
+% 0 1000
+% % Place FontMatrix * CTM on stack
+% currentfont /FontMatrix get
+% matrix currentmatrix
+% matrix concatmatrix
+% % figure out the "height" of the font
+% dtransform dup mul exch dup mul add sqrt ==
+
+% % You don't have to know units per em square
+% currentfont
+% dup /FontMatrix get 0 get % original scale in x
+% 1 index /FontName get setfont % create new font with scale of 1 unit (default)
+% currentfont /FontMatrix get 0 get % new scale in x
+% div == % This is the scale of the original font
+% setfont % original font set

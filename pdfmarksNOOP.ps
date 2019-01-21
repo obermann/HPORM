@@ -1,0 +1,33 @@
+%!PS-Adobe-3.0
+
+% Store the original pdfmark
+/*pdfmark /pdfmark load def
+
+% Replace pdfmark with a filter
+/pdfmark {
+	{
+		{ counttomark pop } stopped
+		{ /pdfmark errordict /unmatchedmark get exec stop } if
+
+		dup type /nametype ne
+		{ /pdfmark errordict /typecheck get exec stop } if
+
+		dup /OUT eq
+		{ (Skipping OUT pdfmark\n) print cleartomark exit } if
+		
+		dup /LNK eq
+		{ (Skipping LNK pdfmark\n) print cleartomark exit } if
+		
+		dup /ANN eq
+		{ (Skipping ANN pdfmark\n) print cleartomark exit } if
+		
+		dup /PAGE eq
+		{ (Skipping PAGE pdfmark\n) print cleartomark exit } if
+
+		//*pdfmark
+		exit
+	} loop
+} bind def
+
+% To switch back:
+% /pdfmark { //*pdfmark } bind def
