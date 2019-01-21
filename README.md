@@ -35,8 +35,10 @@ Get:
 
 1. **markingALLstep1.bat** should produce interim PORM & C pdfs
 2. **markingALLstep2.bat** produces **HPORM.pdf**.
+   IMPORTANT: such HPORM.pdf will have some hyperlinks to PLRM.pdf (from PLRM.pdfmarksLNK2.ps)!
 
-Alternatively, to add hyperlinks to the operators reference in the original PLRM.pdf only **markingMIN.bat** may be ran instead.
+Alternatively, to add hyperlinks to the operators reference in the original big PLRM.pdf only **markingMIN.bat** may be ran instead:
+1. **markingMIN.bat** produces **HPLRM.pdf**.
 
 Everything may be adapted to POSIX without problem.
 Theoretically any PDF producing PS interpreter may be used instead of GhostScript.
