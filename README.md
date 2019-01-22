@@ -9,7 +9,7 @@ I felt the lack of a usable online/interactive help for PS. So, here you are -
 that may make PLRM.pdf Chapter 8 "Operators" hypertextual and bookmarked.
 
 ## Legal Notice
-Adobe let freely download versions of PLRM.pdf for many years, but it has clear notice:
+Adobe let freely download versions of PLRM.pdf for many years, but it has a clear notice:
 > © 1985–1999 Adobe Systems Incorporated. All rights reserved.
 > 
 > NOTICE: All information contained herein is the property of Adobe Systems Incorporated.
